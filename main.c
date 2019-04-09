@@ -1,10 +1,15 @@
 #include <stdio.h>
 
-int main(void)  {
-    char str[2048]= "hello world!";
-
-        printf("read %s\n", str);
-
-    return 0;
+int main()
+{
+    char message[] = "aadst";
+    int key = 1;
+    int index;
     
+    for (index=0; message[index] != 0; index++)
+    {
+        message[index]=message[index]-key;
+        
+    }
+    printf("%s", message);
 }

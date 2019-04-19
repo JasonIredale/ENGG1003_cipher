@@ -2,14 +2,31 @@
 
 int main()
 {
-    char message[] = "aadst";
-    int key = 1;
-    int index;
+    FILE *inp;
+    FILE *outp;
+    char array_counter;
+    char text[1024];
     
-    for (index=0; message[index] != 0; index++)
-    {
-        message[index]=message[index]-key;
+    int key = 5;
+    char index = &text;
+    
+    inp = fopen("enc.txt", "r");
+    outp = fopen("dec.txt", "w");
+    array_counter = fscanf(inp, "%c", &index);
+    
+    
+    while (feof(inp)==0) {
+        //for (index=0; text[index] != 0; index++){
+        text[index]=text[index]-key;   
+       //}
         
+        fprintf(outp, "%c", index);
+        array_counter = fscanf(inp, "%c", &index);
     }
-    printf("%s", message);
+    
+
+    fclose(inp);
+    fclose(outp);
+    
+    return 0;
 }

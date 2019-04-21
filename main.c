@@ -8,7 +8,7 @@ int main()
     char text[1024];
     
     int key = 5;
-    char index = &text;
+    int index = &text;
     
     inp = fopen("enc.txt", "r");
     outp = fopen("dec.txt", "w");
@@ -17,7 +17,7 @@ int main()
     
     while (feof(inp)==0) {
         //for (index=0; text[index] != 0; index++){
-        text[index]=text[index]-key;   
+        index=index-key;   
        //}
         
         fprintf(outp, "%c", index);

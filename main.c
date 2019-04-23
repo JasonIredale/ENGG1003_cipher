@@ -1,119 +1,117 @@
 #include <stdio.h>
+
+char rotf(char i, int k);
+
 int main() {
     FILE *inp;
     FILE *outp;
+    inp = fopen("input", "r");
+    outp = fopen("output", "w");
     char text[512];
     char index = &text;
     int key = 0;
     int choice = 0;
-    
-    printf("Enter a number in 'input' then the message you want to encrypt below it:\n(1) Rotation Encryption\n(2) Rotation Decryption\n\n(3) Substitution Encryption\n(4) Substitution Decryption\n");
+
+    printf("\nPlease enter your message in 'input' and choose a cipher:\n\n(1) Rotation Encryption\n(2) Rotation Decryption\n");
+    printf("(3) Substitution Encryption\n(4) Substitution Decryption\n");
     scanf("%d", &choice);
-      
+    
+    
     switch (choice) {
-        case 1:                     //Rotation Encryption
         
-        inp = fopen("Caesar Input", "r");
-        outp = fopen("Caesar Encryption", "w");
-        
-        fscanf(inp, "%c", &index);  //Reads the first text space in Ceasar Input
-        key = index-48;             //Turns the ASCII number in input to the cipher number
-        fscanf(inp, "%c", &index);  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
-        if (48<=index && index<=57)
-            key =key*10 + index-48;        
-        while (feof(inp)==0) {      //while (there is still text to read from Input) 
-            if (65<=index && index<=90) {
-                index = (index - 13 + key) % 26 + 65;   //We add the key value for encryption
+        case 1:                                     //Rotation Encryption
+        printf("\nPlease enter a cipher key.\n");
+        scanf("%d", &key);
+        fscanf(inp, "%c", &index);                  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
+        while (feof(inp)==0) {                      //while (there is still text to read from Input) 
+            fprintf(outp, "%c", rotf(index, key));
+            printf("%c", rotf(index, key));         //"All output should be sent to BOTH the file and stdout"- 3.1.2 Outputs
+            fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+        }
+        printf("\n\n");
+        fprintf(outp, "\n\n");
+        break;
+            
+        case 2:                                         //Caesar Decryption  
+        printf("\nPlease choose choose a cipher key. If you do not have one, enter <0>.\n");
+        scanf("%d", &key);
+        if(key==0) {
+            for (key=0;key<=25;key++) {
+                fprintf(outp, "(%d)\n", key);
+                fscanf(inp, "%c", &index);                  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
+                while (feof(inp)==0) {                      //while (there is still text to read from Input) 
+                    fprintf(outp, "%c", rotf(index, -key));
+                    if (rotf(index, -key)==32) {
+                        fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                        fprintf(outp, "%c", rotf(index, -key));
+                        if (rotf(index, -key)==84) {            // "T"
+                            fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                            fprintf(outp, "%c", rotf(index, -key));
+                            if (rotf(index, -key)==72) { //TH
+                                fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                                fprintf(outp, "%c", rotf(index, -key));
+                                if (rotf(index, -key)==69) { //THE
+                                    fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                                    fprintf(outp, "%c", rotf(index, -key));
+                                    if(rotf(index, -key)==32) {
+                                        rewind (inp);
+                                        fclose(outp);             
+                                        outp = fopen("output", "w");
+                                        goto line_97;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                }
+                fprintf(outp, "\n\n");
+                rewind(inp); 
             }
-            else if (97<=index && index<=122) {     //"If a lowercase letter is found... convert it to uppercase" - 3.2 Message text specification
-                index = (index - 19 + key) % 26 + 65;
+            for (key=0;key<=25;key++) {
+                fscanf(inp, "%c", &index);                  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
+                while (feof(inp)==0) {                      //while (there is still text to read from Input) 
+                    if (rotf(index, -key)==32) {
+                        fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                        if (rotf(index, -key)==73) {            // "I"
+                            fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                            if (rotf(index, -key)==70 || rotf(index, -key)==78 || rotf(index, -key)==83 || rotf(index, -key)==84) { //IF, IT, IS or IN
+                                fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                                if(rotf(index, -key)==32) {
+                                    rewind (inp);
+                                    fclose(outp);             
+                                    outp = fopen("output", "w");
+                                    goto line_97;
+                                }
+                            }
+                        } 
+                    }
+                    fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+                }
+                rewind(inp);
             }
-            else if (index==13) {
-                printf("\n");
-            } 
-            fprintf(outp, "%c", index);
-            printf("%c", index);        //"All output should be sent to BOTH the file and stdout"- 3.1.2 Outputs
-            fscanf(inp, "%c", &index);  //Reads the next text character, acts as a sort of increment feature
+            printf("Could not deduce decryption. All possible decryptions sent to file'output'\n");
+        }
+        else {
+            line_97:
+            fprintf(outp, "(%d)\n", key);
+            printf("\n(%d)\n", key);
+            fscanf(inp, "%c", &index);                  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
+            while (feof(inp)==0) {                      //while (there is still text to read from Input) 
+                fprintf(outp, "%c", rotf(index, -key));
+                printf("%c", rotf(index, -key));         //"All output should be sent to BOTH the file and stdout"- 3.1.2 Outputs
+                fscanf(inp, "%c", &index);              //Reads the next text character, acts as a sort of increment feature
+            }
+            printf("\n\n");
         }
         break;
-    
-    case 2:                         //Caesar Decryption  
-        printf("Caesar Decrytion:\n");
-        inp = fopen("Caesar Input", "r");
-        outp = fopen("Caesar Decryption", "w");
         
-        fscanf(inp, "%c", &index);  //Reads the first text space in Ceasar Input
-        key = index-48;          //Turns the ASCII number in input to the cipher number
-        fscanf(inp, "%c", &index);  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
-        if (48<=index && index<=57)
-            key =key*10 + index-48;
-        key=-key;
-        while (feof(inp)==0) {      //while (there is still text to read from Input) 
-            if (65<=index && index<=90) {
-                index = (index - 13 + key) % 26 + 65;   //We add the key value for encryption
-            }
-            else if (97<=index && index<=122) {     //"If a lowercase letter is found... convert it to uppercase" - 3.2 Message text specification
-                index = (index - 19 + key) % 26 + 65;
-            }
-            else if (index==13) {
-                printf("\n");
-            } 
-            fprintf(outp, "%c", index);
-            printf("%c", index);        //"All output should be sent to BOTH the file and stdout"- 3.1.2 Outputs
-            fscanf(inp, "%c", &index);  //Reads the next text character, acts as a sort of increment feature
-        }
+        
+        
+        case 3:                                     //Substitution Encryption 
         break;
 
-    
-        case 3: //Substitution Encryption 
-        printf("Substitution Encryption:\n");
-        inp = fopen("Substitution Input", "r");
-        outp = fopen("Substitution Encryption", "w");
-        fscanf(inp, "%c", &index);  //Reads the first text space in Ceasar Input
-        key = index-48;          //Turns the ASCII number in input to the cipher number
-        fscanf(inp, "%c", &index);  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
-        if (48<=index && index<=57)
-            key =key*10 + index-48;  
-        while (feof(inp)==0) {      //while (there is still text to read from Input) 
-            if (65<=index && index<=90) {
-                index = (index - 13 + key) % 26 + 65;   //We add the key value for encryption
-            }
-            else if (97<=index && index<=122) {     //"If a lowercase letter is found... convert it to uppercase" - 3.2 Message text specification
-                index = (index - 19 + key) % 26 + 65;
-            }
-            else if (index==13) {
-                printf("\n");
-            }
-            fprintf(outp, "%c", index);
-            printf("%c", index);        //"All output should be sent to BOTH the file and stdout"- 3.1.2 Outputs
-            fscanf(inp, "%c", &index);  //Reads the next text character, acts as a sort of increment feature
-        }
-        break;
-
-        case 4: //Substitution Decryption  
-        printf("Substitution Decryption:\n");
-        inp = fopen("Substitution Input", "r");
-        outp = fopen("Substitution Decryption", "w");
-        fscanf(inp, "%c", &index);  //Reads the first text space in Ceasar Input
-        key = index-48;          //Turns the ASCII number in input to the cipher number
-        fscanf(inp, "%c", &index);  //This skips the cipher key and keeps Caesar Encryption uniform to stdout
-        if (48<=index && index<=57)
-            key =key*10 + index-48;
-        key=-key;
-        while (feof(inp)==0) {      //while (there is still text to read from Input) 
-            if (65<=index && index<=90) {
-                index = (index - 13 + key) % 26 + 65;   //We add the key value for encryption
-            }
-            else if (97<=index && index<=122) {     //"If a lowercase letter is found... convert it to uppercase" - 3.2 Message text specification
-                index = (index - 19 + key) % 26 + 65;
-            }
-            else if (index==13) {
-                printf("\n");
-            }            
-            fprintf(outp, "%c", index);
-            printf("%c", index);        //"All output should be sent to BOTH the file and stdout"- 3.1.2 Outputs
-            fscanf(inp, "%c", &index);  //Reads the next text character, acts as a sort of increment feature
-        }
+        case 4:                                     //Substitution Decryption  
         break;
         
         default:
@@ -121,5 +119,16 @@ int main() {
     }
     fclose(inp);
     fclose(outp);    
-    return 0;
+    return 0;  
+}
+
+
+char rotf(char i, int k) {
+    if (65<=i && i<=90) {
+        i = (i - 13 + k) % 26 + 65;   //We add the key value for encryption
+    }
+    else if (97<=i && i<=122) {     //"If a lowercase letter is found... convert it to uppercase" - 3.2 Message text specification
+        i = (i - 19 + k) % 26 + 65;
+    }
+    return i;
 }

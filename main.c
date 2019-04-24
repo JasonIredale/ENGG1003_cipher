@@ -5,19 +5,17 @@ char rotf(char i, int k);
 int main() {
     FILE *inp;
     FILE *outp;
-    FILE *subf;
+    FILE *sub;
     inp = fopen("input", "r");
     outp = fopen("output", "w");
-    subf = fopen("Substitution_Key", "r");
+    sub = fopen("Substitution_Key", "r");
     char text[512];
     char index = &text;
     char substitution_key_alphabet[32];
     char subkey = &substitution_key_alphabet;
     int key = 0;
     int choice = 0;
-    
-    char A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
-    int n;
+    int n = 0;
 
     printf("\nPlease enter your message in 'input' and choose a cipher:\n\n(1) Rotation Encryption\n(2) Rotation Decryption\n");
     printf("(3) Substitution Encryption\n(4) Substitution Decryption\n");
@@ -113,39 +111,30 @@ int main() {
         }
         break;
         
-        
-        
         case 3:                                     //Substitution Encryption 
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); A = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); B = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); C = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); D = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); E = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); F = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); G = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); H = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); I = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); J = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); K = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); L = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); M = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); N = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); O = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); P = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); Q = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); R = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); S = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); T = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); U = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); V = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); W = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); X = subkey - 65;
-        fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); Y = subkey - 65;     fscanf(subf, "%c", &subkey); subkey = rotf(subkey, 0); Z = subkey - 65;
-        
         fscanf(inp, "%c", &index);
-        while (feof ==0) {
-        index = rotf(index, 0);
-        if (index == 65){
-            index = index + A;
+        while (feof(inp)==0) {
+            index = rotf(index, 0);
+            if (index<65 || 90<index) {
+                fprintf(outp, "%c", index);
+                printf("%c", index);
+                fscanf(inp, "%c", &index);
+                continue;
+            }
+            for(n = 0; n<26; n++) {
+                fscanf(sub, "%c", &subkey);
+                subkey = rotf(subkey, 0);
+                if (index == subkey) {
+                    index = 65 + n;
+                    fprintf(outp, "%c", index);
+                    printf("%c", index);
+                    fscanf(inp, "%c", &index);
+                    break;
+                }
+            }
+        rewind(sub);
         }
-        else if (index == 66) {
-            index = index + B;
-        } ...
-            .
-            .
-            .
-        fprintf(outp, "%c", index);
-        fscanf(inp, "%c", index);
-    }
-    
+        printf("\n\n");
         break;
 
         case 4:                                     //Substitution Decryption  
@@ -156,7 +145,7 @@ int main() {
     }
     fclose(inp);
     fclose(outp);    
-    fclose(subf);
+    fclose(sub);
     return 0;  
 }
 

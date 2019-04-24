@@ -138,6 +138,29 @@ int main() {
         break;
 
         case 4:                                     //Substitution Decryption  
+        fscanf(inp, "%c", &index);
+        while (feof(inp)==0) {
+            index = rotf(index, 0);
+            if (index<65 || 90<index) {
+                fprintf(outp, "%c", index);
+                printf("%c", index);
+                fscanf(inp, "%c", &index);
+                continue;
+            }
+            for(n = 0; n<26; n++) {
+                fscanf(sub, "%c", &subkey);
+                subkey = rotf(subkey, 0);
+                if (index == 65 + n) {
+                    index = subkey;
+                    fprintf(outp, "%c", index);
+                    printf("%c", index);
+                    fscanf(inp, "%c", &index);
+                    break;
+                }
+            }
+        rewind(sub);
+        }
+        printf("\n\n");
         break;
         
         default:

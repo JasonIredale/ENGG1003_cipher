@@ -149,21 +149,36 @@ int main() {
                 subkey = rotf(subkey, 0);                   //Transform the key character into an uppercase.
                 if(subkey<65 || subkey>90) {                // "if (it isn't a letter)" Consider they key bogus and ask the user to enter it properly.
                     printf("\nSubstitution Key was entered incorrectly, Please only enter letters in the english alphabet with no spaces or new lines.\n");
+                    break;
                 }
-                if (index == subkey) {
+                if (index == subkey) {                      //"if (the letter read in text[] is the same as the letter read in the substitution key)". Comparing if two letters are the same.
                     index = 65 + j;
+                    /* This is complicated;
+                    As the ordered place of "subkey" (eg, read "subkey" --> 0th place means we encrypt "A" as "subkey" letter. read "subkey" again --> 1st place means we encrypt "B" as "subkey" letter and so on)
+                    is always equal to j (they start at zero and increment at the same rate almost simultaneuosly),
+                    then we can use "j" to represent a letter in the ordered sequence of "subkey" letters in "string Substitution_Key_str[26]".
+                        So, for j=0;
+                            if the read letter in file "input" (text[n]) is the same as the 0th letter in file "Substitution_key" (Substitution_Key_str[0]);
+                            ---> index == 65 + 0 == A .
+                        for j=1;
+                            if the read letter in file "input" (text[n]) is the same as the 1th letter in file "Substitution_key" (Substitution_Key_str[1]);
+                            ---> index == 65 + 1 == B .
+                        and so on.
+                    NOTE: the place of the subkey (j) increments all the way to 25 before a new text[n] is read, so on small time frames, the index can be considered constant.
+                    */
                     fprintf(outp, "%c", index);
                     printf("%c", index);
                     fscanf(inp, "%c", &index);
-                    break;
+                    break;                                      //breaking out of the for loop as we have successfully encrypted a character.
                 }
             }
-        rewind(sub);
+        rewind(sub);        //As the above if statement will definately execute if the user has entered the key in as directed, there is no reason to read from inp here. Simply restart sub from the beginning so the for loop will work properly.
         }
         printf("\n\n");
         break;
 
-        case 4:                                     //Substitution Decryption  
+        //Substitution Decryption :    Simply Inverse Substitution Encryption
+        case 4: 
         fscanf(inp, "%c", &index);
         while (feof(inp)==0) {
             index = rotf(index, 0);
@@ -180,6 +195,10 @@ int main() {
                 fscanf(sub, "%c", &subkey);
                 subkey = rotf(subkey, 0);
                 if (index == 65 + j) {
+                    /*I explained this in case (3) however there is one slight change:
+                    instead of comparing the index to Substitution_key_alphabet[j] and assigning the index to a letter,
+                    I'm comparing the index to a letter and assinging the index to Substitution_Key_alphbet[j].
+                    */
                     index = subkey;
                     fprintf(outp, "%c", index);
                     printf("%c", index);
@@ -202,12 +221,12 @@ int main() {
 }
 
 
-char rotf(char i, int k) {
-    if (65<=i && i<=90) {
-        i = (i - 13 + k) % 26 + 65;   //We add the key value for encryption
+char rotf(char i, int k) {              //We almost always substitute the index for i and the key for k. For substitution, k==0.
+    if (65<=i && i<=90) {               // "if (the character is a captital letter)"...
+        i = (i - 13 + k) % 26 + 65;     // we translate i : (A)65 - 13 is a factor of 26 => (65-13)mod26 == 0, so we can find the principle modulus for i + k, find the principle modulus and translate it up by 65. It is just translating around the ASCII table.
     }
-    else if (97<=i && i<=122) {     //"If a lowercase letter is found... convert it to uppercase" - 3.2 Message text specification
-        i = (i - 19 + k) % 26 + 65;
+    else if (97<=i && i<=122) {         //"If a lowercase letter is found... convert it to uppercase" - 3.2 Message text specification
+        i = (i - 19 + k) % 26 + 65;     //We do the same as before except since 97 - 13 != a factor of 26, change 19 for 13. Because 97 - 13 == a factor of 26 ie, (97-13)mod26==0, this alogorithm works.
     }
-    return i;
+    return i;                           // return the index (usually).
 }

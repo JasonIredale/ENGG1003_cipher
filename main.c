@@ -14,8 +14,6 @@ I decided to not repeat my comments, or at least repeat them scarecly. There is 
 WARNING: a "goto" function is used in operation (2) because I could not figure out a functional way to break out of two loops instantaneoulsy.
 */
 
-
-
 #include <stdio.h>
 
 char rotf(char i, int k);                   //The rotation function takes a letter in the english alphabet (i) and rotates it by "k" places.
@@ -28,9 +26,9 @@ int main() {
     outp = fopen("output", "w");                //"outp" wipes the contents then writes in the file, "output". Where the transformed text is sent to.
     sub = fopen("Substitution_Key", "r");       //"sub" reads the file, "Substitution_key". The substitution key is entered IN ALHPABETICAL ORDER.
     char text[1024];                            // The string of characters in file "input" that we shall transform through operation.
-    char index = &text;                         // A pointer to the text string beginning at the 0th character. the ordered place of the character being read increments automatically after every reading.
+    char index = *text;                         // A pointer to the text string beginning at the 0th character. the ordered place of the character being read increments automatically after every reading.
     char substitution_key_str[26];              // The string of characters in the file "Substitution_key".
-    char subkey = &substitution_key_str;        // A pointer to the string. It functions simialarly to "index"
+    char subkey = *substitution_key_str;        // A pointer to the string. It functions simialarly to "index"
     int key = 0;                                // The value for which the rotation cipher will rotate. Used in rotation operations.
     int choice = 0;                             // the variable to disern the operations via a switch statement.
     int j = 0;                                  // An arbitrary variable used for incrementing in substitution operations.
@@ -38,7 +36,7 @@ int main() {
     //Below are immediate instructions on how to interact with the program and execute a cipher operation.
     printf("\nPlease enter your message in file 'input' and choose a cipher operation:\n");
     printf("\n(1) Rotation Encryption\n(2) Rotation Decryption\n(3) Substitution Encryption\n(4) Substitution Decryption\n");
-    printf("\nNOTE: If you want to use a substitution operation, please make sure yout key is entered in alphabetical order with no space nor new lines\n");
+    printf("\nNOTE: If you want to use a substitution operation, please make sure you entered your key in alphabetical order with no space nor new lines\n");
     scanf("%d", &choice);                       // Reads an integer from stdin and compares it the the operation "cases" in the "switch" block.
     
     
@@ -219,7 +217,6 @@ int main() {
     fclose(sub);
     return 0;  
 }
-
 
 char rotf(char i, int k) {              //We almost always substitute the index for i and the key for k. For substitution, k==0.
     if (65<=i && i<=90) {               // "if (the character is a captital letter)"...

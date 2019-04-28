@@ -100,9 +100,9 @@ int main() {
                         fscanf(inp, "%c", &index);
                         if (rotf(index, -key)==73) {            //the ordered subset of text[] has (<space>, I)...
                             fscanf(inp, "%c", &index);
-                            if (rotf(index, -key)==70 || rotf(index, -key)==78 || rotf(index, -key)==83 || rotf(index, -key)==84) { // IF, IT, IS or IN
+                            if (rotf(index, -key)==78 || rotf(index, -key)==83 || rotf(index, -key)==84) { // (<space> IT, IS or IN)
                                 fscanf(inp, "%c", &index);
-                                if(rotf(index, -key)==32) {             //the ordered subset of text[] has (<space>, T, H, E, <space>)...
+                                if(rotf(index, -key)==32) {             //the ordered subset of text[] has (----"---- <space>)
                                     rewind (inp);
                                     fclose(outp);             
                                     outp = fopen("output", "w");
